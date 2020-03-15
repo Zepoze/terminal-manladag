@@ -1,0 +1,16 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "t",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --no-warnings index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "consola": "^2.11.3",
+    "inquirer": "^7.1.0",
+    "manladag": "^1.0.1"
+  }
+}
