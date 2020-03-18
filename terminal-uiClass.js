@@ -1,5 +1,6 @@
-const UI = require('manladag').UI
-const _startUI = require('./terminal-ui').startUI
+const Path = require('path')
+const UI = require('manladag').UI(Path.join(__dirname,'Mangas'))
+const _startUI = require('./terminal-ui').startUI(UI.sources)
 const consola = require('consola')
 class TerminalUI extends UI {
     
