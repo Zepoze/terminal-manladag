@@ -11,6 +11,6 @@
   "dependencies": {
     "consola": "^2.11.3",
     "inquirer": "^7.1.0",
-    "manladag": "file:../Manladag"
+    "manladag": "^2.0.0"
   }
 }

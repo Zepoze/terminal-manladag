@@ -1,12 +1,12 @@
 const Path = require('path')
-const UI = require('manladag').UI(Path.join(__dirname,'Mangas'))
+let {UI, Sources} = require('manladag')
 const _startUI = require('./terminal-ui').startUI(UI.sources)
 const consola = require('consola')
 class TerminalUI extends UI {
     
     constructor() {
         super(TerminalUI)
-        this.startUI()
+        //this.startUI()
     }
 
     startUI() {
@@ -73,4 +73,4 @@ class TerminalUI extends UI {
 
 
 
-module.exports = TerminalUI
+module.exports = {TerminalUI, Sources}

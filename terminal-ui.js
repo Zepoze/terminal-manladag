@@ -1,7 +1,25 @@
 'use strict';
+const fs = require('fs')
 const Path = require('path')
+const PathDownload = Path.join(__dirname,'Mangas')
 const consola = require('consola')
 var inquirer = require('inquirer');
+
+function createChapterFolder(source,manga_index,chap) {
+    let dir
+    
+    if (!fs.existsSync(dir = `${PathDownload}`)){
+        fs.mkdirSync(dir);
+    }
+
+    if (!fs.existsSync(dir = `${PathDownload}/${source.mangas[manga_index].name}`)){
+        fs.mkdirSync(dir)
+    }
+
+    if (!fs.existsSync(dir = `${PathDownload}/${source.mangas[manga_index].name}/${chap}`)){
+        fs.mkdirSync(dir)
+    }
+}
 module.exports.startUI = (sources) => {
     const tmp = async (s,m) => {
         const tab = [
@@ -51,7 +69,7 @@ module.exports.startUI = (sources) => {
             name: 'manga',
             message: `${source.site} Mangas`,
             choices: [
-                ...source.mangas.map((e,i) => { return { name: e.name, value: i }}),
+                ...Object.values(source.mangas).map((e,i) => { return { name: e.name, value: i }}),
                 new inquirer.Separator(),
                 { name: 'Select an other Source', value: -1},
                 { name: 'Exit', value: -2}
@@ -60,14 +78,12 @@ module.exports.startUI = (sources) => {
 
         if(a.manga == -1) startUI();
         else if(a.manga == -2) return 0;
-        else selectChapter(source,a.manga);
+        else selectChapter(source,Object.keys(source.mangas)[a.manga]);
     }
 
 
     async function selectChapter(source,manga_index) {
         const { choices, chapter } = await tmp(source,manga_index)
-
-
         let a = await inquirer
         .prompt([
             {
@@ -81,10 +97,15 @@ module.exports.startUI = (sources) => {
         switch(a.action) {
             case 0:
                 try {
-                    await await source.downloadChapter(manga_index,chapter)
+                    createChapterFolder(source,manga_index,chapter)
+                    const path = await source.downloadChapter(manga_index,chapter,Path.join(PathDownload,source.mangas[manga_index].name,chapter.toString(10)))
                     if(typeof(path) == 'string') {
-                        await source.processChapter(path, manga_index, b.chapter, { pdf: true, zip: true})
+                        await source.processChapter(path, manga_index, chapter, { pdf: true, zip: true})
                     }
+                }catch(e) {
+
+                    console.log(e)
+
                 } finally {
                     selectManga(source)
                 }
@@ -101,7 +122,8 @@ module.exports.startUI = (sources) => {
                 ])
                 b.chapter = parseInt(b.chapter)
                 try {
-                    const path = await source.downloadChapter(manga_index,b.chapter)
+                    createChapterFolder(source,manga_index,b.chapter)
+                    const path = await source.downloadChapter(manga_index,b.chapter,Path.join(PathDownload,source.mangas[manga_index].name,b.chapter.toString(10)))
                     if(typeof(path) == 'string') {
                         await source.processChapter(path, manga_index, b.chapter, { pdf: true, zip: true})
                     }
