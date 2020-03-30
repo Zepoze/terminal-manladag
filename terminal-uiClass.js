@@ -21,8 +21,8 @@ class TerminalUI extends UI {
         consola.info(`contain ${nbPages} pages`)
     }
     static onPageDownloadError({ error, page }) {
+        consola.error(`error in page ${page} download`)
         consola.error(error.message)
-        consola.info(`error in page ${page} download`)
     }
 
     static onChapterDownloadStarted({ manga, chapter }) {

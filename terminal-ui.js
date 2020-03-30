@@ -46,17 +46,28 @@ module.exports.startUI = (sources) => {
     }
 
     async function startUI() {
-        let a = await inquirer
-        .prompt([
-            {
-            type: 'list',
-            name: 'source',
-            message: 'Which Source?',
-            choices: sources.map((e,i) => { return { name: e.site, value: i }})
-            }
-        ])
-        
-        selectManga(sources[a.source])
+        if(sources!=0) {
+            let a = await inquirer
+            .prompt([
+                {
+                    type: 'list',
+                    name: 'source',
+                    message: 'Which Source?',
+                    choices: [
+                        ...sources.map((e,i) => { return { name: e.site, value: i }}),
+                        new inquirer.Separator(),
+                        { name: 'Exit', value: -2}
+                    ]
+                }
+            ])
+            
+            if(a.source!=-2) selectManga(sources[a.source])
+        } else {
+            consola.error('No source setted ??')
+            await new Promise((resolve,reject) => {
+                setTimeout(resolve, 2000)
+            })
+        }
 
 
     }
@@ -103,8 +114,6 @@ module.exports.startUI = (sources) => {
                         await source.processChapter(path, manga_index, chapter, { pdf: true, zip: true})
                     }
                 }catch(e) {
-
-                    console.log(e)
 
                 } finally {
                     selectManga(source)
